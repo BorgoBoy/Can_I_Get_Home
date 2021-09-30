@@ -5,16 +5,32 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "server": "nodemon server/server.js"
+    "build": "rm -r dist/* && webpack --config webpack.config.js --mode production",
+    "dev_server": "nodemon server/server.js",
+    "dev_client": "webpack serve  --hot --open"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.13"
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.3.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "nodemon": "^2.0.13",
+    "style-loader": "^3.3.0",
+    "webpack": "^5.55.1",
+    "webpack-bundle-analyzer": "^4.4.2",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.0"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
