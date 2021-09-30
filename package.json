@@ -2,9 +2,9 @@
   "name": "can_i_get_home",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "src/server/server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node src/server/server.js",
     "server": "nodemon src/server/server.js"
   },
   "keywords": [],
@@ -12,5 +12,9 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.13"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   }
 }
