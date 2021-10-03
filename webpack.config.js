@@ -21,6 +21,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./client/public/index.html",
+      favicon: "./client/public/favicon.png"
     }),
     //new WebpackBundleAnalyzer(),
   ],
