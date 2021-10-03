@@ -2,10 +2,10 @@ import React from "react"
 
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { BellIcon, MenuIcon, XIcon, LoginIcon } from '@heroicons/react/outline'
+import { MenuIcon, XIcon, LoginIcon, UserIcon } from '@heroicons/react/outline'
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: true },
+  { name: 'Dashboard', href: '/dashboard', current: (window.location.pathname == '/dashboard') ? true : false },
   { name: 'Team', href: '#', current: false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
@@ -14,7 +14,6 @@ const navigation = [
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-
 export default class Navbar extends React.Component {
     render() {
         return(
@@ -36,16 +35,13 @@ export default class Navbar extends React.Component {
                         </div>
                         <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                             <div className="flex-shrink-0 flex items-center">
-                            <img
-                                className="block lg:hidden h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                                alt="Workflow"
-                            />
-                            <img
-                                className="hidden lg:block h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                                alt="Workflow"
-                            />
+                                <a href="/"><img
+                                className="block h-8 w-auto pr-2"
+                                src="/favicon.png?"
+                                alt="Can I Get Home?"
+                                />
+                                </a>
+                                <a href="/"><h3 className="text-white font-semibold text-xl">Can I Get Home?</h3></a>
                             </div>
                             <div className="hidden sm:block sm:ml-6">
                             <div className="flex space-x-4">
@@ -66,20 +62,14 @@ export default class Navbar extends React.Component {
                             </div>
                         </div>
                         <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                            <button
-                            type="button"
-                            className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                            >
-                            <span className="sr-only">View notifications</span>
-                            <BellIcon className="h-6 w-6" aria-hidden="true" />
-                            </button>
 
                             {/* Profile dropdown */}
                             <Menu as="div" className="ml-3 relative">
                             <div>
                                 <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                 <span className="sr-only">Open user menu</span>
-                                <LoginIcon />
+                                {/* {user ? <UserIcon className="h-6 w-6 text-gray-400"/> : <LoginIcon className="h-6 w-6 text-gray-400"/>} */}
+                                <LoginIcon className="h-6 w-6 text-gray-400"/>
                                 </Menu.Button>
                             </div>
                             <Transition
@@ -92,36 +82,51 @@ export default class Navbar extends React.Component {
                                 leaveTo="transform opacity-0 scale-95"
                             >
                                 <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <Menu.Item>
-                                    {({ active }) => (
-                                    <a
-                                        href="#"
-                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                    >
-                                        Your Profile
-                                    </a>
-                                    )}
-                                </Menu.Item>
-                                <Menu.Item>
-                                    {({ active }) => (
-                                    <a
-                                        href="#"
-                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                    >
-                                        Settings
-                                    </a>
-                                    )}
-                                </Menu.Item>
-                                <Menu.Item>
-                                    {({ active }) => (
-                                    <a
-                                        href="#"
-                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                    >
-                                        Sign out
-                                    </a>
-                                    )}
-                                </Menu.Item>
+                                    { true ? 
+                                    <>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                            <a
+                                                href="/login"
+                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            >
+                                                Log In
+                                            </a>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                            <a
+                                                href="/signup"
+                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            >
+                                                Register
+                                            </a>
+                                            )}
+                                        </Menu.Item>
+                                    </> : 
+                                    <>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                            <a
+                                                href="/settings"
+                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            >
+                                                Settings
+                                            </a>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                            <a
+                                                href="#"
+                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            >
+                                                Sign out
+                                            </a>
+                                            )}
+                                        </Menu.Item>
+                                    </>}
                                 </Menu.Items>
                             </Transition>
                             </Menu>
