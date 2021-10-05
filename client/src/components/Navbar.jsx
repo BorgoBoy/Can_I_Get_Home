@@ -8,7 +8,7 @@ import { MenuIcon, XIcon, LoginIcon, UserIcon } from '@heroicons/react/outline'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: (window.location.pathname == '/dashboard') ? true : false },
-  { name: 'Team', href: '#', current: false },
+  { name: 'New Bike', href: '/newbike', current: (window.location.pathname == '/newbike') ? true : false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
 ]
