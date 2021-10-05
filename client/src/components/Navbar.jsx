@@ -1,6 +1,8 @@
 import React from "react"
 
+import { signOut } from "firebase/auth";
 import { Fragment } from 'react'
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon, LoginIcon, UserIcon } from '@heroicons/react/outline'
 
@@ -14,7 +16,9 @@ const navigation = [
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-function Navbar () {
+function Navbar (props) {    
+    const [user] = useAuthState(props.auth)
+
     return(
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -67,8 +71,7 @@ function Navbar () {
                         <div>
                             <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                             <span className="sr-only">Open user menu</span>
-                            {/* {user ? <UserIcon className="h-6 w-6 text-gray-400"/> : <LoginIcon className="h-6 w-6 text-gray-400"/>} */}
-                            <LoginIcon className="h-6 w-6 text-gray-400"/>
+                            { !user ? <LoginIcon className="h-6 w-6 text-gray-400"/> : <UserIcon className="h-6 w-6 text-gray-400"/>}
                             </Menu.Button>
                         </div>
                         <Transition
@@ -81,7 +84,7 @@ function Navbar () {
                             leaveTo="transform opacity-0 scale-95"
                         >
                             <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                { true ? 
+                                { !user ? 
                                 <>
                                     <Menu.Item>
                                         {({ active }) => (
@@ -118,7 +121,7 @@ function Navbar () {
                                     <Menu.Item>
                                         {({ active }) => (
                                         <a
-                                            href="#"
+                                            onClick={() => signOut(props.auth)}
                                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                         >
                                             Sign out
@@ -157,3 +160,5 @@ function Navbar () {
 }
 
 export default Navbar
+
+//TODO: Logout redirect 

@@ -1,6 +1,6 @@
 import React from "react";
-import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"
+import { initializeApp } from "firebase/app";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import "../public/tailwind.css"
@@ -26,7 +26,7 @@ const auth = getAuth()
 
 const App = () => ( 
     <div>
-        <Navbar />
+        <Navbar auth={auth}/>
         <BrowserRouter>
             <Switch>
                 <Route path="/login">
