@@ -43,7 +43,7 @@ const App = () => (
                     <Settings />
                 </Route>
                 <Route path="/newbike">
-                    <NewBike />
+                    <NewBike auth={auth} app={app} />
                 </Route>
             </Switch>
         </BrowserRouter>
