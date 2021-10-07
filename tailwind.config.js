@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {},
     inset: {
-      '25': 25
+      '25': "5vh"
     }
   },
   variants: {
