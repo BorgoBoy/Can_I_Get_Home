@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Add from './AddButton'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, query, where } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 import bike from '/client/public/bike.png'
 
 function Dashboard(props) {
 
+    let bikes = []
     const db = getFirestore(props.app);
-    
     const [user] = useAuthState(props.auth)
 
-    const bikes = query(collection(db, "motorbike"), where('uid', '==', user.auth.currentUser.uid))
+    useEffect(() => {
+        if (user) {
+            bikes = getDocs(query(collection(db, "motorbike"), where('uid', '==', user.auth.currentUser.uid)))
+            console.log(bikes)
+        }
+    }, [user])
 
     return (
         <div className="min-h-screen bg-gray-100 pt-6">
