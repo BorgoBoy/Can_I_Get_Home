@@ -17,4 +17,6 @@ const app = express()
 
 app.use(express.json())
 
+app.use('/api', require('./api/bike'))
+
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
