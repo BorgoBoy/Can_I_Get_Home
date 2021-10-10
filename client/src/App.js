@@ -11,6 +11,7 @@ import SignUp from "./components/SignUp"
 import Dashboard from "./components/Dashboard"
 import Settings from "./components/Settings";
 import NewBike from "./components/NewBike";
+import NewRecord from "./components/NewRecord";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBgznEFJwSE7X-O7Hqzad693MxbmAU7jkA",
@@ -44,6 +45,9 @@ const App = () => (
                 </Route>
                 <Route path="/newbike">
                     <NewBike auth={auth} app={app} />
+                </Route>
+                <Route path="/newrecord">
+                    <NewRecord auth={auth} app={app} />
                 </Route>
             </Switch>
         </BrowserRouter>
