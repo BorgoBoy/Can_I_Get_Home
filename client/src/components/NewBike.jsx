@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import h2r from "/client/public/h2r.png";
+import h2r from "/client/public/h2r.jpg";
 import { useHistory } from "react-router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getFirestore, collection, addDoc } from "firebase/firestore"; 
