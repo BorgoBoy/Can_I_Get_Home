@@ -37,7 +37,7 @@ const App = () => (
                     <SignUp auth={auth}/>
                 </Route>
                 <Route path="/dashboard">
-                    <Dashboard />
+                    <Dashboard auth={auth} app={app}/>
                 </Route>
                 <Route path="/settings">
                     <Settings />
