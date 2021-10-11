@@ -16,7 +16,7 @@ const navigation = [
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-function Navbar (props) {    
+function Navbar (props) {
     const [user] = useAuthState(props.auth)
 
     return(
@@ -84,7 +84,7 @@ function Navbar (props) {
                             leaveTo="transform opacity-0 scale-95"
                         >
                             <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                { !user ? 
+                                { !user ?
                                 <>
                                     <Menu.Item>
                                         {({ active }) => (
@@ -106,7 +106,7 @@ function Navbar (props) {
                                         </a>
                                         )}
                                     </Menu.Item>
-                                </> : 
+                                </> :
                                 <>
                                     <Menu.Item>
                                         {({ active }) => (
@@ -161,4 +161,4 @@ function Navbar (props) {
 
 export default Navbar
 
-//TODO: Logout redirect 
+//TODO: Logout redirect
