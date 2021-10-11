@@ -1,21 +1,28 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import r1m from "/client/public/r1m.jpg";
+import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
 
 function NewRecord(props) {
+
+    let history = useHistory()
 
     const db = getFirestore(props.app);
     const [bikes, setBikes] = useState([])
     const [user] = useAuthState(props.auth)
 
+    const [selBike, setSelBike] = useState('')
+    const [liters, setLiters] = useState('')
+    const [totalKM, setTotalKM] = useState('')
+
     useEffect(() => {
         if (user) {
             async function getBikes() {
-                const ref = collection(db, "motorbike")
-                const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
+                const ref = collection(db, toString(JSON.stringify(user.auth.currentUser.uid)+"/bikes"))
+                //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
                 await getDocs(q).then((docs) => {
                     docs.forEach((doc) => {
                         setBikes(old => [...old, doc])
@@ -30,43 +37,41 @@ function NewRecord(props) {
     return (
         <div>
             {user && 
-                <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gray-500 bg-no-repeat bg-contain relative items-center"
-                style={{background: `url(${r1m})`}}>
-                    <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
-                    <div className="mt-2 items-center z-10">
-                        <form className="p-14 bg-white max-w-sm mx-auto rounded-xl shadow-xl overflow-hidden p-6 space-y-10">
-                            <h2 className="text-4xl font-bold text-center text-indigo-600">Login</h2>
-                            <div className="f-outline px-2 relative border rounded-lg focus-within:border-indigo-500">
-                                <input type="email" name="email" placeholder=" "
-                                    className="block p-2 w-full text-lg appearance-none focus:outline-none bg-transparent" />
-                                <label htmlFor="email"
-                                    className="absolute ml-5 top-0 text-lg text-gray-700 bg-white mt-2 -z-1 duration-300 origin-0">Email</label>
+                <div className="content px-8 py-2 bg-contain bg-no-repeat h-screen" style={{background: `url(${r1m})`, backgroundSize: "cover", backgroundPosition: "center"}}>
+                    <div className="body mt-20 mx-8">
+                        <div className="md:flex items-center justify-between">
+                            <div className="w-full md:w-1/2 mr-auto">
+                                <h1 className="text-7xl font-bold text-white tracking-wide">Add a new record</h1>
+                                <br />
+                                <h2 className="text-white text-xl">Select your motorbike from the menu and insert<br /> how much gas you put in and the total KM</h2>
                             </div>
-                            <div className="f-outline px-2 relative border rounded-lg focus-within:border-indigo-500">
-                                <input type="password" name="password" placeholder=" "
-                                    className="block p-2 w-full text-lg appearance-none focus:outline-none bg-transparent" />
-                                <label htmlFor="password"
-                                    className="absolute ml-5 top-0 text-lg text-gray-700 bg-white mt-2 -z-1 duration-300 origin-0">Password</label>
+                            <div className="w-full md:max-w-md mt-6">
+                                <div className="card bg-white shadow-md rounded-lg px-4 py-4 mb-6 ">
+                                    <div>
+                                        <div className="flex items-center justify-center">
+                                            <h2 className="text-2xl font-semibold tracking-wide pb-4">
+                                                Add a new record:
+                                            </h2> 
+                                        </div>
+                                        <label htmlFor="bike">Select your bike:</label>
+                                        <select onChange={e => setSelBike(e.target.value)} name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
+                                            {bikes.map(item => {
+                                                return <option key={item.id} value={item}>{item.data().name}</option>
+                                            })}
+                                        </select>
+                                        <label htmlFor="liters">Enter how mych gas you put:</label>
+                                        <input onChange={e => setLiters(e.target.value)} id="liters" type="text" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
+                                        <label htmlFor="totalKm">Enter the total KM:</label>
+                                        <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
+                                        <div className="text-center pt-2">
+                                            <button onClick={() => setDoc(doc(db, toString(JSON.stringify(user.auth.currentUser.uid)+"/bikes/"+selBike.id+"/records"), Date.now()), { selBike: selBike.data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
-                            <div className="block mt-2">
-                                <label htmlFor="" className="flex items-center">
-                                    <input type="checkbox"
-                                        className="ml-2 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                    </input>
-                                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                                </label>
-                            </div>
-                            <div className="flex items-center flex items-center justify-end mt-4">
-                                <a className="underline text-sm text-gray-600 hover:text-gray-900" href="#">
-                                    Forgot Password?
-                                </a>
-                                <button
-                                    className="px-6 py-2 ml-4 font-semibold cursor-pointer text-center focus:outline-none transition hover:shadow-lg shadow hover:bg-indigo-700 rounded-full text-white bg-indigo-600 ">
-                        Log in
-                    </button>
+                        </div>
                     </div>
-                </form>
-                </div>
                 </div>
             }
         </div>
@@ -75,4 +80,6 @@ function NewRecord(props) {
 
 export default NewRecord
 
+//TODO: redirect to bike page
 //TODO: try to change it
+//TODO: if no bikes redirect to newBike
