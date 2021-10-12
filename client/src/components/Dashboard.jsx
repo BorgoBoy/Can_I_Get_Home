@@ -16,7 +16,7 @@ function Dashboard(props) {
     useEffect(() => {
         if (user) {
             async function getBikes() {
-                const ref = collection(db, toString(JSON.stringify(user.auth.currentUser.uid)+"/bikes"))
+                const ref = collection(db, user.auth.currentUser.uid)
                 //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
                 await getDocs(ref).then((docs) => {
                     docs.forEach((doc) => {
