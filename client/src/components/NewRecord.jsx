@@ -21,9 +21,9 @@ function NewRecord(props) {
     useEffect(() => {
         if (user) {
             async function getBikes() {
-                const ref = collection(db, toString(JSON.stringify(user.auth.currentUser.uid)+"/bikes"))
+                const ref = collection(db, user.auth.currentUser.uid)
                 //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
-                await getDocs(q).then((docs) => {
+                await getDocs(ref).then((docs) => {
                     docs.forEach((doc) => {
                         setBikes(old => [...old, doc])
                     })
@@ -64,7 +64,7 @@ function NewRecord(props) {
                                         <label htmlFor="totalKm">Enter the total KM:</label>
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
                                         <div className="text-center pt-2">
-                                            <button onClick={() => setDoc(doc(db, toString(JSON.stringify(user.auth.currentUser.uid)+"/bikes/"+selBike.id+"/records"), Date.now()), { selBike: selBike.data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
+                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike.id, "records", Date.now()), { selBike: selBike.data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
                                     </div>
                                 </div>
