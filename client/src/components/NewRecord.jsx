@@ -34,6 +34,10 @@ function NewRecord(props) {
         }
     }, [user])
 
+    const Change = (event) => {
+        setSelBike(event.target.value);
+            console.log(selBike);
+    }
     return (
         <div>
             {user && 
@@ -54,9 +58,9 @@ function NewRecord(props) {
                                             </h2> 
                                         </div>
                                         <label htmlFor="bike">Select your bike:</label>
-                                        <select onChange={e => setSelBike(e.target.value)} name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
+                                        <select onChange={(e) => Change(e)} name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
                                             {bikes.map(item => {
-                                                return <option key={item.id} value={item}>{item.data().name}</option>
+                                                return <option key={item.id} value={item.id}>{item.data().name}</option>
                                             })}
                                         </select>
                                         <label htmlFor="liters">Enter how mych gas you put:</label>
@@ -64,7 +68,7 @@ function NewRecord(props) {
                                         <label htmlFor="totalKm">Enter the total KM:</label>
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
                                         <div className="text-center pt-2">
-                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike.id, "records", Date.now()), { selBike: selBike.data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
+                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now()), { bikeData: bikes.find(x => x.id === selBike).data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
                                     </div>
                                 </div>
