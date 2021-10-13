@@ -36,7 +36,6 @@ function NewRecord(props) {
 
     const Change = (event) => {
         setSelBike(event.target.value);
-            console.log(selBike);
     }
 
     const UpdateKM = () => {
@@ -65,6 +64,7 @@ function NewRecord(props) {
                                         </div>
                                         <label htmlFor="bike">Select your bike:</label>
                                         <select onChange={(e) => Change(e)} name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
+                                            <option value="" disabled selected>-- Select your Bike --</option>
                                             {bikes.map(item => {
                                                 return <option key={item.id} value={item.id}>{item.data().name}</option>
                                             })}
@@ -94,3 +94,5 @@ export default NewRecord
 //TODO: try to change it
 //TODO: if no bikes redirect to newBike
 //TODO: error handle
+//TODO: check if selbike = '', liters = '' and totalKM = ''
+//TODO: history push not refreshing nav
