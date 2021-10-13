@@ -51,7 +51,7 @@ const App = () => (
                     <NewRecord auth={auth} app={app} />
                 </Route>
                 <Route path="/bike/:id">
-                    <BikePage />
+                    <BikePage auth={auth} app={app} />
                 </Route>
             </Switch>
         </BrowserRouter>
