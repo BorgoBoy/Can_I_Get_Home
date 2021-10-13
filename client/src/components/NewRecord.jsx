@@ -38,6 +38,12 @@ function NewRecord(props) {
         setSelBike(event.target.value);
             console.log(selBike);
     }
+
+    const UpdateKM = () => {
+        setDoc(doc(db, user.auth.currentUser.uid, selBike), {totalKm: totalKM}, {merge:true})
+        .then(() => history.push('/dashboard'))
+    }
+
     return (
         <div>
             {user && 
@@ -68,8 +74,7 @@ function NewRecord(props) {
                                         <label htmlFor="totalKm">Enter the total KM:</label>
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
                                         <div className="text-center pt-2">
-                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now().toString()), { bikeData: bikes.find(x => x.id === selBike).data(), liters, totalKm: totalKM }).then(() => history.push('/dashboard'))} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
-                                            {/* setDoc(doc(db, user.auth.currentUser.uid, selBike), {totalKm: (bikes.find(x => x.id === selBike).data().totalKm + liters)}, {merge:true}).then(() => history.push('/dashboard')) */}
+                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now().toString()), { bikeData: bikes.find(x => x.id === selBike).data(), liters, totalKm: totalKM }).then(() => UpdateKM())} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
                                     </div>
                                 </div>
