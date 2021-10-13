@@ -3,7 +3,7 @@ import "regenerator-runtime/runtime";
 import Add from './AddButton'
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 import bike from '/client/public/bike.png'
 

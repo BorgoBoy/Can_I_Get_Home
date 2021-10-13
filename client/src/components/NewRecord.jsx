@@ -4,7 +4,7 @@ import r1m from "/client/public/r1m.jpg";
 import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, setDoc } from "firebase/firestore";
 
 function NewRecord(props) {
 
