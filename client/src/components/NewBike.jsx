@@ -33,7 +33,7 @@ function NewBike(props) {
                             <label htmlFor="totalKm" className="leading-7 text-sm text-gray-600">Total Km</label>
                             <input onChange={e => setTotalKm(e.target.value)} type="number" id="totalKm" name="totalKm" className="w-full bg-white rounded-md border border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 text-sm outline-none text-gray-900 py-0.5 px-3 leading-8 transition-colors duration-150 ease-in-out"/>
                         </div>
-                        <button onClick={() => addDoc(collection(db, user.auth.currentUser.uid), { uid:user.auth.currentUser.uid, name, totalKm }).then(() => history.push('/dashboard'))} className="text-white bg-indigo-500 rounded-md border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 text-lg">Submit</button>
+                        <button onClick={() => addDoc(collection(db, user.auth.currentUser.uid), { uid:user.auth.currentUser.uid, name, totalKm, totalRecords: 0, totalLiters: 0 }).then(() => history.push('/dashboard'))} className="text-white bg-indigo-500 rounded-md border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 text-lg">Submit</button>
                     </div>
                 </div>
             </div>}
