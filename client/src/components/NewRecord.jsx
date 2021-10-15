@@ -39,7 +39,7 @@ function NewRecord(props) {
     }
 
     const UpdateKM = () => {
-        setDoc(doc(db, user.auth.currentUser.uid, selBike), {totalKm: totalKM}, {merge:true})
+        setDoc(doc(db, user.auth.currentUser.uid, selBike), {totalKm: totalKM, totalRecords: parseFloat(bikes.find(x => x.id === selBike).data().totalRecords) + 1, totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters)}, {merge:true})
         .then(() => history.push('/dashboard'))
     }
 
@@ -63,18 +63,18 @@ function NewRecord(props) {
                                             </h2> 
                                         </div>
                                         <label htmlFor="bike">Select your bike:</label>
-                                        <select onChange={(e) => Change(e)} name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
-                                            <option value="" disabled selected>-- Select your Bike --</option>
+                                        <select onChange={(e) => Change(e)} defaultValue="DEFAULT" name="bikes" id="bikes" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none">
+                                            <option value="DEFAULT" disabled>-- Select your Bike --</option>
                                             {bikes.map(item => {
                                                 return <option key={item.id} value={item.id}>{item.data().name}</option>
                                             })}
                                         </select>
-                                        <label htmlFor="liters">Enter how mych gas you put:</label>
-                                        <input onChange={e => setLiters(e.target.value)} id="liters" type="text" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
+                                        <label htmlFor="liters">Enter how much gas you put in:</label>
+                                        <input onChange={e => setLiters(e.target.value)} id="liters" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
                                         <label htmlFor="totalKm">Enter the total KM:</label>
-                                        <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" placeholder="Password" />
+                                        <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
                                         <div className="text-center pt-2">
-                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now().toString()), { bikeData: bikes.find(x => x.id === selBike).data(), liters, totalKm: totalKM }).then(() => UpdateKM())} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
+                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now().toString()), { bikeData: bikes.find(x => x.id === selBike).data(), liters: parseFloat(liters), totalKm: parseFloat(totalKM) }).then(() => UpdateKM())} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -96,3 +96,4 @@ export default NewRecord
 //TODO: error handle
 //TODO: check if selbike = '', liters = '' and totalKM = ''
 //TODO: history push not refreshing nav
+//TODO: remove redundand parseFloat()
