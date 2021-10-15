@@ -15,21 +15,21 @@ function BikePage(props) {
     const [user] = useAuthState(props.auth)
 
     useEffect(() => {
-        if (user) {
-            async function getBike() {
-                const ref = doc(db, user.auth.currentUser.uid, id)
-                await getDoc(ref).then((doc) => {
-                        setBike(doc.data())
-                })
-            }
-            
-            getBike()
+      if (user) {
+        async function getBike() {
+            const ref = doc(db, user.auth.currentUser.uid, id)
+            await getDoc(ref).then((doc) => {
+              setBike(doc.data())
+            })
         }
+            
+        getBike()
+      }
     }, [user])
 
     return (
         <div>
-            {user && 
+            {bike && 
                 <div>
                 <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
                 <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" />
@@ -64,30 +64,23 @@ function BikePage(props) {
                             <div className="w-full lg:w-4/12 px-4 lg:order-1">
                               <div className="flex justify-center py-4 lg:pt-4 pt-8">
                                 <div className="mr-4 p-3 text-center">
-                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span><span className="text-sm text-blueGray-400">Friends</span>
+                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalKm}</span><span className="text-sm text-blueGray-400">Total KM</span>
                                 </div>
                                 <div className="mr-4 p-3 text-center">
-                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">10</span><span className="text-sm text-blueGray-400">Photos</span>
+                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalRecords}</span><span className="text-sm text-blueGray-400">Total Refuels</span>
                                 </div>
                                 <div className="lg:mr-4 p-3 text-center">
-                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">89</span><span className="text-sm text-blueGray-400">Comments</span>
+                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalLiters}</span><span className="text-sm text-blueGray-400">Total Liters Put</span>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <div className="text-center mt-12">
                             <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                              Jenna Stones
+                              {bike.name}
                             </h3>
                             <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                              <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400" />
-                              Los Angeles, California
-                            </div>
-                            <div className="mb-2 text-blueGray-600 mt-10">
-                              <i className="fas fa-briefcase mr-2 text-lg text-blueGray-400" />Solution Manager - Creative Tim Officer
-                            </div>
-                            <div className="mb-2 text-blueGray-600">
-                              <i className="fas fa-university mr-2 text-lg text-blueGray-400" />University of Computer Science
+                              Average consumption: {}
                             </div>
                           </div>
                           <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
