@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Line } from 'react-chartjs-2';
 import { useParams } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, collection, getDoc, getDocs } from "firebase/firestore";
 
 import rossi from '/client/public/rossi.jpg'
 import bikeImg from '/client/public/bike.png'
@@ -12,6 +13,11 @@ function BikePage(props) {
 
     const db = getFirestore(props.app);
     const [bike, setBike] = useState()
+    // const [records, setRecords] = useState([])
+
+    const [average, setAverage] = useState([])
+    const [km_list, setKm_list] = useState([])
+
     const [user] = useAuthState(props.auth)
 
     useEffect(() => {
@@ -22,10 +28,50 @@ function BikePage(props) {
               setBike(doc.data())
             })
         }
+        async function getRecords() {
+          const ref = collection(db, user.auth.currentUser.uid, id, "records")
+          await getDocs(ref).then((docs) => {
+              docs.forEach((doc) => {
+                // setRecords(old => [...old, doc])
+                setKm_list(old => [...old, doc.data().totalKm])
+                setAverage(old => [...old, doc.data().km / doc.data().liters])
+              })
+          })
+        }
             
         getBike()
+        getRecords()
       }
     }, [user])
+
+    const data = {
+      labels: km_list,
+      datasets: [
+        {
+          label: 'Average Km/l',
+          data: average,
+          fill: false,
+          backgroundColor: 'rgb(50,205,50)',
+          borderColor: 'rgba(50,205,50, 0.2)',
+          tension: 0.1
+        },
+      ],
+    };
+    
+    const options = {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+      interaction: {
+        intersect: false
+      },
+    };
 
     return (
         <div>
@@ -80,37 +126,20 @@ function BikePage(props) {
                               {bike.name}
                             </h3>
                             <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                              Average consumption: {}
+                              Average consumption: {bike.totalKm / bike.totalLiters} Km/l
                             </div>
                           </div>
                           <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
                             <div className="flex flex-wrap justify-center">
                               <div className="w-full lg:w-9/12 px-4">
-                                <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
-                                  An artist of considerable range, Jenna the name taken by
-                                  Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                                  performs and records all of his own music, giving it a
-                                  warm, intimate feel with a solid groove structure. An
-                                  artist of considerable range.
-                                </p>
-                                <a href="#pablo" className="font-normal text-pink-500">Show more</a>
+                                <Line data={data} options={options} />
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <footer className="relative bg-blueGray-200 pt-8 pb-6 mt-8">
-                      <div className="container mx-auto px-4">
-                        <div className="flex flex-wrap items-center md:justify-between justify-center">
-                          <div className="w-full md:w-6/12 px-4 mx-auto text-center">
-                            <div className="text-sm text-blueGray-500 font-semibold py-1">
-                              Made with <a href="https://www.creative-tim.com/product/notus-js" className="text-blueGray-500 hover:text-gray-800" target="_blank">Notus JS</a> by <a href="https://www.creative-tim.com" className="text-blueGray-500 hover:text-blueGray-800" target="_blank"> Creative Tim</a>.
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </footer>
+                    
                   </section>
                 </main>
               </div>
@@ -120,3 +149,5 @@ function BikePage(props) {
 }
 
 export default BikePage
+
+//TODO: remove useState
