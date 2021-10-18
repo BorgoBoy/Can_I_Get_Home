@@ -13,6 +13,7 @@ import Settings from "./components/Settings";
 import NewBike from "./components/NewBike";
 import NewRecord from "./components/NewRecord";
 import BikePage from "./components/BikePage";
+import Calculator from "./components/Calculator";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBgznEFJwSE7X-O7Hqzad693MxbmAU7jkA",
@@ -52,6 +53,9 @@ const App = () => (
                 </Route>
                 <Route path="/bike/:id">
                     <BikePage auth={auth} app={app} />
+                </Route>
+                <Route path="/calculator">
+                    <Calculator auth={auth} app={app} />
                 </Route>
             </Switch>
         </BrowserRouter>

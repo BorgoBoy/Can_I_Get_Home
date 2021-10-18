@@ -10,7 +10,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: (window.location.pathname == '/dashboard') ? true : false },
   { name: 'New Bike', href: '/newbike', current: (window.location.pathname == '/newbike') ? true : false },
   { name: 'New Record', href: '/newrecord', current: (window.location.pathname == '/newrecord') ? true : false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Calculator', href: '/calculator', current: (window.location.pathname == '/calculator') ? true : false  },
 ]
 
 function classNames(...classes) {
