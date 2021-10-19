@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, orderBy, limit, query } from "firebase/firestore";
 
 function Calculator(props) {
 
@@ -10,12 +10,14 @@ function Calculator(props) {
     const [user] = useAuthState(props.auth)
 
     const [currentKm, setCurrentKm] = useState()
+    const [lastKm, setLastKm] = useState()
+    const [lastLiter, setlastLiter] = useState()
+    const [avg, setAvg] = useState()
 
     useEffect(() => {
         if (user) {
             async function getBikes() {
                 const ref = collection(db, user.auth.currentUser.uid)
-                //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
                 await getDocs(ref).then((docs) => {
                     docs.forEach((doc) => {
                         setBikes(old => [...old, doc])
@@ -26,14 +28,24 @@ function Calculator(props) {
             getBikes()
         }
     }, [user])
-
+    
     const Change = (event) => {
         setSelBike(event.target.value);
     }
-
+    
     const Calculate = () => {
-        const avg = bikes.find(x => x.id === selBike).data().totalKm / bikes.find(x => x.id === selBike).data().totalLiters
-        console.log(avg)
+        setAvg(bikes.find(x => x.id === selBike).data().totalKm / bikes.find(x => x.id === selBike).data().totalLiters)
+    }
+    
+    const getRecords = async () => {
+        const ref = collection(db, user.auth.currentUser.uid, selBike, "records")
+        const q = query(ref, orderBy("totalKm", "desc"), limit(1))
+        await getDocs(q).then((docs) => {
+            docs.forEach((doc) => {
+                setLastKm(doc.data().totalKm)
+                setlastLiter(doc.data().liters)
+            })
+        })
     }
 
     return(
@@ -75,8 +87,23 @@ function Calculator(props) {
                                 </h1> */}
                                 <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
                                     <p className="text-normal text-center text-lg sm:text-xl font-small text-gray-600 dark:text-gray-400 mt-2">
-                                        You have {} Km left
+                                        You have:
                                     </p>
+                                </div>
+                                <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
+                                    <p className="text-normal text-center text-lg sm:text-xl font-small text-gray-600 dark:text-gray-400 mt-2">
+                                        {((currentKm - lastKm) / avg - lastLiter) * avg} Km left
+                                    </p>
+                                </div>
+                                <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
+                                    <p className="text-normal text-center text-lg sm:text-xl font-small text-gray-600 dark:text-gray-400 mt-2">
+                                        {(currentKm - lastKm) / avg - lastLiter} liters left
+                                    </p>
+                                </div>
+                                <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
+                                    <button onClick={() => getRecords()} type="submit" className="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300">
+                                        Submit
+                                    </button>
                                 </div>
                                 {/* <div className="flex items-center mt-4 text-gray-600 dark:text-gray-400">
                                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" className="w-8 h-8 text-gray-500">
@@ -107,3 +134,4 @@ function Calculator(props) {
 export default Calculator
 
 //TODO: refactor bc this code is shit
+//TODO: maybe cash bike info or get data before selection
