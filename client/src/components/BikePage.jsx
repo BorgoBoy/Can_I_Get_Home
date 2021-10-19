@@ -159,3 +159,4 @@ export default BikePage
 
 //TODO: remove useState
 //TODO: delete subcollection
+//TODO: fix triggers navbar mobile
