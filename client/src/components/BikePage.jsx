@@ -133,7 +133,7 @@ function BikePage(props) {
                               {bike.name}
                             </h3>
                             <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                              Average consumption: {bike.totalKm / bike.totalLiters} Km/l
+                              Average consumption: {(bike.totalKm - bike.startKm) / bike.totalLiters} Km/l
                             </div>
                           </div>
                           <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
