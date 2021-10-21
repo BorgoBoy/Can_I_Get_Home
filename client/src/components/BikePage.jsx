@@ -15,9 +15,8 @@ function BikePage(props) {
 
     const db = getFirestore(props.app);
     const [bike, setBike] = useState()
-    // const [records, setRecords] = useState([])
 
-    const [average, setAverage] = useState([])
+    const [average_list, setAverage_list] = useState([])
     const [km_list, setKm_list] = useState([])
 
     const [confirm, setConfirm] = useState(false)
@@ -32,28 +31,36 @@ function BikePage(props) {
               setBike(doc.data())
             })
         }
-        async function getRecords() {
-          const ref = collection(db, user.auth.currentUser.uid, id, "records")
-          await getDocs(ref).then((docs) => {
-              docs.forEach((doc) => {
-                // setRecords(old => [...old, doc])
-                setKm_list(old => [...old, doc.data().totalKm])
-                setAverage(old => [...old, doc.data().km / doc.data().liters])
-              })
-          })
-        }
-            
+
         getBike()
-        getRecords()
       }
     }, [user])
+
+    useEffect(() => {
+
+      if (bike) {
+        setKm_list(bike.records.map(({totalKm}) => totalKm))
+        let prev = bike.startKm
+        setAverage_list(bike.records.map((record) => {
+          const avg = (record.totalKm - prev) / record.liters
+          prev = record.totalKm
+          return avg
+        }))
+      }
+      
+    }, [bike])
+
+    // const titleToolTip = (TooltipItems) => {
+    //   console.log(TooltipItems);
+    //   return bike.records.find(x => x.totalKm === TooltipItems[0].label).date
+    // }
 
     const data = {
       labels: km_list,
       datasets: [
         {
           label: 'Average Km/l',
-          data: average,
+          data: average_list,
           fill: false,
           backgroundColor: 'rgb(50,205,50)',
           borderColor: 'rgba(50,205,50, 0.2)',
@@ -75,6 +82,16 @@ function BikePage(props) {
       interaction: {
         intersect: false
       },
+      plugins: {
+        tooltip: {
+          yAlign: 'bottom',
+          displayColors: false,
+          titleAlign: 'center',
+          callbacks: {
+            // title: titleToolTip
+          }
+        }
+      }
     };
 
     return (
@@ -120,7 +137,7 @@ function BikePage(props) {
                                   <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalKm}</span><span className="text-sm text-blueGray-400">Total KM</span>
                                 </div>
                                 <div className="mr-4 p-3 text-center">
-                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalRecords}</span><span className="text-sm text-blueGray-400">Total Refuels</span>
+                                  <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{Object.keys(bike.records).length}</span><span className="text-sm text-blueGray-400">Total Refuels</span>
                                 </div>
                                 <div className="lg:mr-4 p-3 text-center">
                                   <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{bike.totalLiters}</span><span className="text-sm text-blueGray-400">Total Liters Put</span>
@@ -130,7 +147,8 @@ function BikePage(props) {
                           </div>
                           <div className="text-center mt-12">
                             <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                              {bike.name}
+                              {JSON.stringify(average_list)}
+                              {/* {bike.name} */}
                             </h3>
                             <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                               Average consumption: {(bike.totalKm - bike.startKm) / bike.totalLiters} Km/l
@@ -160,3 +178,5 @@ export default BikePage
 //TODO: remove useState
 //TODO: delete subcollection
 //TODO: fix triggers navbar mobile
+//TODO : tooltips label
+//TODO: maybe sort records
