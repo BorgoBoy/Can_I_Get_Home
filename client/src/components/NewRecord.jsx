@@ -4,7 +4,7 @@ import r1m from "/client/public/r1m.jpg";
 import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, setDoc, arrayUnion } from "firebase/firestore";
 
 function NewRecord(props) {
 
@@ -38,8 +38,16 @@ function NewRecord(props) {
         setSelBike(event.target.value);
     }
 
-    const UpdateKM = () => {
-        setDoc(doc(db, user.auth.currentUser.uid, selBike), {totalKm: totalKM, totalRecords: parseFloat(bikes.find(x => x.id === selBike).data().totalRecords) + 1, totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters)}, {merge:true})
+    const AddRecord = () => {
+        setDoc(doc(db, user.auth.currentUser.uid, selBike), {
+            totalKm: parseFloat(totalKM),
+            totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters),
+            records: arrayUnion({
+                date: Date.now().toString(),
+                km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm),
+                liters: parseFloat(liters), totalKm: parseFloat(totalKM)
+            })
+        }, { merge: true })
         .then(() => history.push('/dashboard'))
     }
 
@@ -74,7 +82,7 @@ function NewRecord(props) {
                                         <label htmlFor="totalKm">Enter the total KM:</label>
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
                                         <div className="text-center pt-2">
-                                            <button onClick={() => setDoc(doc(db, user.auth.currentUser.uid, selBike, "records", Date.now().toString()), { bikeData: bikes.find(x => x.id === selBike).data(), liters: parseFloat(liters), totalKm: parseFloat(totalKM), km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm)}).then(() => UpdateKM())} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
+                                            <button onClick={() => AddRecord()} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -97,3 +105,4 @@ export default NewRecord
 //TODO: check if selbike = '', liters = '' and totalKM = ''
 //TODO: history push not refreshing nav
 //TODO: remove redundand parseFloat()
+//TODO: add filled (true of false) to database
