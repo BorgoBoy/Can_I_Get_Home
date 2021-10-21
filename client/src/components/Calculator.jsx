@@ -13,6 +13,8 @@ function Calculator(props) {
     const [lastKm, setLastKm] = useState()
     const [lastLiter, setlastLiter] = useState()
     const [avg, setAvg] = useState()
+    const [avg_low, setAvg_low] = useState()
+    const [avg_high, setAvg_high] = useState()
 
     useEffect(() => {
         if (user) {
@@ -29,24 +31,23 @@ function Calculator(props) {
         }
     }, [user])
     
-    const Change = (event) => {
-        setSelBike(event.target.value);
-    }
-    
     const Calculate = () => {
+        let sort = bikes.find(x => x.id === selBike).data().records.sort((a, b) => (a.km / a.liters > b.km / b.liters) ? 1 : -1)
+        setAvg_low(sort[0].km / sort[0].liters)
+        setAvg_high(sort[sort.length - 1].km / sort[sort.length - 1].liters)
         setAvg(bikes.find(x => x.id === selBike).data().totalKm / bikes.find(x => x.id === selBike).data().totalLiters)
     }
     
-    const getRecords = async () => {
-        const ref = collection(db, user.auth.currentUser.uid, selBike, "records")
-        const q = query(ref, orderBy("totalKm", "desc"), limit(1))
-        await getDocs(q).then((docs) => {
-            docs.forEach((doc) => {
-                setLastKm(doc.data().totalKm)
-                setlastLiter(doc.data().liters)
-            })
-        })
-    }
+    // const getRecords = async () => {
+    //     const ref = collection(db, user.auth.currentUser.uid, selBike, "records")
+    //     const q = query(ref, orderBy("totalKm", "desc"), limit(1))
+    //     await getDocs(q).then((docs) => {
+    //         docs.forEach((doc) => {
+    //             setLastKm(doc.data().totalKm)
+    //             setlastLiter(doc.data().liters)
+    //         })
+    //     })
+    // }
 
     return(
         <div>
@@ -61,7 +62,7 @@ function Calculator(props) {
                                 </h1>
                                 <form className="p-6 flex flex-col justify-center">
                                     <div className="flex flex-col">
-                                        <select onChange={(e) => Change(e)} defaultValue="DEFAULT" name="bikes" id="bikes" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 focus:border-indigo-500 focus:outline-none">
+                                        <select onChange={(e) => setSelBike(e.target.value)} defaultValue="DEFAULT" name="bikes" id="bikes" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 focus:border-indigo-500 focus:outline-none">
                                             <option value="DEFAULT" disabled>-- Select your Bike --</option>
                                             {bikes.map(item => {
                                                 return <option key={item.id} value={item.id}>{item.data().name}</option>
