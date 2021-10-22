@@ -17,6 +17,7 @@ function NewRecord(props) {
     const [selBike, setSelBike] = useState('')
     const [liters, setLiters] = useState('')
     const [totalKM, setTotalKM] = useState('')
+    const [filledTank, setFilledTank] = useState(true)
 
     useEffect(() => {
         if (user) {
@@ -39,16 +40,30 @@ function NewRecord(props) {
     }
 
     const AddRecord = () => {
-        setDoc(doc(db, user.auth.currentUser.uid, selBike), {
-            totalKm: parseFloat(totalKM),
-            totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters),
-            records: arrayUnion({
-                date: Date.now().toString(),
-                km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm),
-                liters: parseFloat(liters), totalKm: parseFloat(totalKM)
-            })
-        }, { merge: true })
-        .then(() => history.push('/dashboard'))
+        if (filledTank) {
+            setDoc(doc(db, user.auth.currentUser.uid, selBike), {
+                totalKm: parseFloat(totalKM),
+                totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters),
+                records: arrayUnion({
+                    date: Date.now().toString(),
+                    km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm),
+                    liters: parseFloat(liters), totalKm: parseFloat(totalKM)
+                })
+            }, { merge: true })
+            .then(() => history.push('/dashboard'))
+        } else {
+            let bike = bikes.find(x => x.id === selBike).data()
+            setDoc(doc(db, user.auth.currentUser.uid, selBike), {
+                totalKm: parseFloat(totalKM),
+                totalLiters: parseFloat(bike.totalLiters) + parseFloat(liters),
+                records: arrayUnion({
+                    date: Date.now().toString(),
+                    km: parseFloat(totalKM) - parseFloat(bike.totalKm),
+                    liters: parseFloat(liters), totalKm: parseFloat(totalKM)
+                })
+            }, { merge: true })
+            .then(() => history.push('/dashboard'))
+        }
     }
 
     return (
@@ -77,10 +92,16 @@ function NewRecord(props) {
                                                 return <option key={item.id} value={item.id}>{item.data().name}</option>
                                             })}
                                         </select>
-                                        <label htmlFor="liters">Enter how much gas you put in:</label>
-                                        <input onChange={e => setLiters(e.target.value)} id="liters" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
                                         <label htmlFor="totalKm">Enter the total KM:</label>
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
+                                        <label htmlFor="liters">Enter how much gas you put in:</label>
+                                        <input onChange={e => setLiters(e.target.value)} id="liters" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
+                                        <div className="flex justify-center mb-2">
+                                            <label className="flex items-center">
+                                                <input onChange={() => setFilledTank(!filledTank)} type="checkbox" className="form-checkbox" defaultChecked/>
+                                                <span className="ml-2">Filled tank?</span>
+                                            </label>
+                                        </div>
                                         <div className="text-center pt-2">
                                             <button onClick={() => AddRecord()} className="bg-gray-800 text-gray-200 px-2 py-1 rounded">Add</button>
                                         </div>
@@ -106,3 +127,4 @@ export default NewRecord
 //TODO: history push not refreshing nav
 //TODO: remove redundand parseFloat()
 //TODO: add filled (true of false) to database
+//TODO: refactor AddRecord
