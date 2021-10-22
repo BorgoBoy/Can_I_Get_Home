@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getFirestore, collection, getDocs, orderBy, limit, query } from "firebase/firestore";
+import ktms from "/client/public/ktms.jpg";
 
 function Calculator(props) {
 
@@ -10,11 +11,16 @@ function Calculator(props) {
     const [user] = useAuthState(props.auth)
 
     const [currentKm, setCurrentKm] = useState()
-    const [lastKm, setLastKm] = useState()
-    const [lastLiter, setlastLiter] = useState()
-    const [avg, setAvg] = useState()
+
     const [avg_low, setAvg_low] = useState()
     const [avg_high, setAvg_high] = useState()
+    const [maxLiters, setMaxLiters] = useState()
+
+    const [minKm, setMinKm] = useState()
+    const [maxKm, setMaxKm] = useState()
+    const [minLitersLeft, setMinLitersLeft] = useState()
+    const [maxLitersLeft, setMaxLitersLeft] = useState()
+
 
     useEffect(() => {
         if (user) {
@@ -35,24 +41,22 @@ function Calculator(props) {
         let sort = bikes.find(x => x.id === selBike).data().records.sort((a, b) => (a.km / a.liters > b.km / b.liters) ? 1 : -1)
         setAvg_low(sort[0].km / sort[0].liters)
         setAvg_high(sort[sort.length - 1].km / sort[sort.length - 1].liters)
-        setAvg(bikes.find(x => x.id === selBike).data().totalKm / bikes.find(x => x.id === selBike).data().totalLiters)
+        setMaxLiters(bikes.find(x => x.id === selBike).data().maxLiters)
     }
     
-    // const getRecords = async () => {
-    //     const ref = collection(db, user.auth.currentUser.uid, selBike, "records")
-    //     const q = query(ref, orderBy("totalKm", "desc"), limit(1))
-    //     await getDocs(q).then((docs) => {
-    //         docs.forEach((doc) => {
-    //             setLastKm(doc.data().totalKm)
-    //             setlastLiter(doc.data().liters)
-    //         })
-    //     })
-    // }
+    const KmLitersLeft = () => {
+        let records = bikes.find(x => x.id === selBike).data().records
+        setMinKm((maxLiters - (currentKm - records[records.length - 1].totalKm) / avg_low) * avg_low)
+        setMaxKm((maxLiters - (currentKm - records[records.length - 1].totalKm) / avg_high) * avg_high)
+        setMinLitersLeft(maxLiters - (currentKm - records[records.length - 1].totalKm) / avg_low)
+        setMaxLitersLeft(maxLiters - (currentKm - records[records.length - 1].totalKm) / avg_high)
+    }
 
     return(
         <div>
             {user &&
-            <div className="relative flex items-top justify-center min-h-screen bg-white dark:bg-gray-900 sm:items-center sm:pt-0">
+            <div className="relative flex items-top justify-center min-h-screen bg-white dark:bg-gray-900 sm:items-center sm:pt-0"
+                style={{background: `url(${ktms})`, backgroundSize: "cover", backgroundPosition: "center"}}>
                 <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
                     <div className="mt-8 overflow-hidden">
                         <div className="grid grid-cols-1 md:grid-cols-2">
@@ -93,16 +97,16 @@ function Calculator(props) {
                                 </div>
                                 <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
                                     <p className="text-normal text-center text-lg sm:text-xl font-small text-gray-600 dark:text-gray-400 mt-2">
-                                        {((currentKm - lastKm) / avg - lastLiter) * avg} Km left
+                                        {minKm} - {maxKm} Km left
                                     </p>
                                 </div>
                                 <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
                                     <p className="text-normal text-center text-lg sm:text-xl font-small text-gray-600 dark:text-gray-400 mt-2">
-                                        {(currentKm - lastKm) / avg - lastLiter} liters left
+                                        {minLitersLeft} - {maxLitersLeft} liters left
                                     </p>
                                 </div>
                                 <div className="flex justify-center mt-2 text-gray-600 dark:text-gray-400">
-                                    <button onClick={() => getRecords()} type="submit" className="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300">
+                                    <button onClick={() => {KmLitersLeft()}} type="submit" className="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300">
                                         Submit
                                     </button>
                                 </div>
@@ -136,3 +140,4 @@ export default Calculator
 
 //TODO: refactor bc this code is shit
 //TODO: maybe cash bike info or get data before selection
+//TODO: optimize usestate (array...)
