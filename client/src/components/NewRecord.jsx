@@ -23,7 +23,6 @@ function NewRecord(props) {
         if (user) {
             async function getBikes() {
                 const ref = collection(db, user.auth.currentUser.uid)
-                //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
                 await getDocs(ref).then((docs) => {
                     docs.forEach((doc) => {
                         setBikes(old => [...old, doc])
@@ -47,21 +46,22 @@ function NewRecord(props) {
                 records: arrayUnion({
                     date: Date.now().toString(),
                     km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm),
-                    liters: parseFloat(liters), totalKm: parseFloat(totalKM)
+                    liters: parseFloat(liters),
+                    totalKm: parseFloat(totalKM)
                 })
             }, { merge: true })
             .then(() => history.push('/dashboard'))
         } else {
             let bike = bikes.find(x => x.id === selBike).data()
-            setDoc(doc(db, user.auth.currentUser.uid, selBike), {
-                totalKm: parseFloat(totalKM),
-                totalLiters: parseFloat(bike.totalLiters) + parseFloat(liters),
-                records: arrayUnion({
-                    date: Date.now().toString(),
-                    km: parseFloat(totalKM) - parseFloat(bike.totalKm),
-                    liters: parseFloat(liters), totalKm: parseFloat(totalKM)
-                })
-            }, { merge: true })
+            bike.records[bike.records.length - 1] = {
+                date: Date.now().toString(),
+                km: parseFloat(totalKM) - parseFloat(bike.totalKm) + bike.records[bike.records.length - 1].km,
+                liters: parseFloat(liters) + bike.records[bike.records.length - 1].liters,
+                totalKm: parseFloat(totalKM)
+            }
+            bike.totalKm = parseFloat(totalKM)
+            bike.totalLiters = parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters)
+            setDoc(doc(db, user.auth.currentUser.uid, selBike), bike)
             .then(() => history.push('/dashboard'))
         }
     }
