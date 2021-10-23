@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getFirestore, doc, collection, getDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, deleteDoc } from "firebase/firestore";
 
 import rossi from '/client/public/rossi.jpg'
 import bikeImg from '/client/public/bike.png'
@@ -50,10 +50,14 @@ function BikePage(props) {
       
     }, [bike])
 
-    // const titleToolTip = (TooltipItems) => {
-    //   console.log(TooltipItems);
-    //   return bike.records.find(x => x.totalKm === TooltipItems[0].label).date
-    // }
+    function timeConverter(timestamp){
+      var a = new Date(timestamp.substring(0, timestamp.length - 3) * 1000)
+      var dd = a.getDate()
+      var mm = a.getMonth() + 1; //January is 0!
+      var yyyy = a.getFullYear();
+      var time = [dd, mm, yyyy].join('/')
+      return time;
+    }
 
     const data = {
       labels: km_list,
@@ -88,7 +92,9 @@ function BikePage(props) {
           displayColors: false,
           titleAlign: 'center',
           callbacks: {
-            // title: titleToolTip
+            title: (item) => {
+              return timeConverter(bike.records.find(x => x.totalKm == item[0].label).date)
+            }
           }
         }
       }
@@ -147,8 +153,7 @@ function BikePage(props) {
                           </div>
                           <div className="text-center mt-12">
                             <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                              {JSON.stringify(average_list)}
-                              {/* {bike.name} */}
+                              {bike.name}
                             </h3>
                             <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                               Average consumption: {(bike.totalKm - bike.startKm) / bike.totalLiters} Km/l
