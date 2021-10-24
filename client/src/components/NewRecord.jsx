@@ -1,6 +1,7 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import r1m from "/client/public/r1m.jpg";
+import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,6 +19,9 @@ function NewRecord(props) {
     const [liters, setLiters] = useState('')
     const [totalKM, setTotalKM] = useState('')
     const [filledTank, setFilledTank] = useState(true)
+
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date().setMonth(startDate.getMonth() + 1))
 
     useEffect(() => {
         if (user) {
@@ -96,6 +100,22 @@ function NewRecord(props) {
                                         <input onChange={e => setTotalKM(e.target.value)} id="totalKm" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
                                         <label htmlFor="liters">Enter how much gas you put in:</label>
                                         <input onChange={e => setLiters(e.target.value)} id="liters" type="number" className="rounded px-4 w-full py-1 bg-gray-100  border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none" />
+                                        <div className="bg-gray-100">
+                                            <div className="min-h-screen flex items-center max-w-2xl mx-auto justify-center space-x-4">
+                                                <div className="relative">
+                                                    <DatePicker
+                                                        selected={startDate}
+                                                        onChange={(date) => setStartDate(date)}
+                                                        selectsStart
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        minDate={new Date()}
+                                                        nextMonthButtonLabel=">"
+                                                        previousMonthButtonLabel="<"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div className="flex justify-center mb-2">
                                             <label className="flex items-center">
                                                 <input onChange={() => setFilledTank(!filledTank)} type="checkbox" className="form-checkbox" defaultChecked/>
