@@ -21,7 +21,7 @@ function NewRecord(props) {
     const [totalKM, setTotalKM] = useState('')
     const [filledTank, setFilledTank] = useState(true)
 
-    const [startDate, setStartDate] = useState(new Date());
+    const [date, setDate] = useState(new Date().getTime())
 
     useEffect(() => {
         if (user) {
@@ -48,7 +48,7 @@ function NewRecord(props) {
                 totalKm: parseFloat(totalKM),
                 totalLiters: parseFloat(bikes.find(x => x.id === selBike).data().totalLiters) + parseFloat(liters),
                 records: arrayUnion({
-                    date: Date.now().toString(),
+                    date: date.toString(),
                     km: parseFloat(totalKM) - parseFloat(bikes.find(x => x.id === selBike).data().totalKm),
                     liters: parseFloat(liters),
                     totalKm: parseFloat(totalKM)
@@ -58,7 +58,7 @@ function NewRecord(props) {
         } else {
             let bike = bikes.find(x => x.id === selBike).data()
             bike.records[bike.records.length - 1] = {
-                date: Date.now().toString(),
+                date: date.toString(),
                 km: parseFloat(totalKM) - parseFloat(bike.totalKm) + bike.records[bike.records.length - 1].km,
                 liters: parseFloat(liters) + bike.records[bike.records.length - 1].liters,
                 totalKm: parseFloat(totalKM)
@@ -103,7 +103,7 @@ function NewRecord(props) {
                                         <div className="flex items-center mx-auto space-x-4">
                                             <div className="relative">
                                                 <label htmlFor="datepicker">Date:</label>
-                                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} 
+                                                <DatePicker selected={date} onChange={(Date) => setDate(Date.getTime())} 
                                                     className="rounded px-4 w-full py-1 bg-gray-100 border border-gray-400 mb-4 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none"
                                                 />
                                             </div>
