@@ -17,7 +17,6 @@ function Dashboard(props) {
         if (user) {
             async function getBikes() {
                 const ref = collection(db, user.auth.currentUser.uid)
-                //const q = query(ref, where('uid', '==', user.auth.currentUser.uid))
                 await getDocs(ref).then((docs) => {
                     docs.forEach((doc) => {
                         setBikes(old => [...old, doc])
