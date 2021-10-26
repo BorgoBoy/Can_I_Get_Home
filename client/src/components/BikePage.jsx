@@ -183,5 +183,6 @@ export default BikePage
 //TODO: remove useState
 //TODO: delete subcollection
 //TODO: fix triggers navbar mobile
-//TODO : tooltips label
+//TODO: tooltips label
 //TODO: maybe sort records
+//TODO: deleted message
